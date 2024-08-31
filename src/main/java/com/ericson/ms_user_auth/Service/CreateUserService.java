@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ericson.ms_user_auth.Domain.DTOS.UserResponseDTO;
 import com.ericson.ms_user_auth.Domain.Entity.UserEntity;
 import com.ericson.ms_user_auth.Exception.UserFoundException;
 import com.ericson.ms_user_auth.Repository.UserRepository;
@@ -17,9 +18,9 @@ public class CreateUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserEntity execute(UserEntity userEntity) {
+    public UserResponseDTO execute(UserEntity userEntity) {
 
-        this.userRepository.findByUsernameOrEmail(userEntity.getUsername(), userEntity.getEmail())
+        this.userRepository.findByEmail(userEntity.getEmail())
                 .ifPresent((user) -> {
                     throw new UserFoundException();
                 });
@@ -27,6 +28,8 @@ public class CreateUserService {
         var password = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(password);
 
-        return this.userRepository.save(userEntity);
+        UserEntity savedUser = this.userRepository.save(userEntity);
+
+        return new UserResponseDTO(savedUser.getUsername(), savedUser.getEmail());
     }
 }

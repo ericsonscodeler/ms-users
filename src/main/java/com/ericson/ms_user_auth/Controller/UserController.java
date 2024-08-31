@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ericson.ms_user_auth.Domain.DTOS.UserResponseDTO;
 import com.ericson.ms_user_auth.Domain.Entity.UserEntity;
 import com.ericson.ms_user_auth.Service.CreateUserService;
 
@@ -21,9 +22,8 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@Valid @RequestBody UserEntity userEntity) {
-        System.out.print("entrou");
         try {
-            var result = this.createUserService.execute(userEntity);
+            UserResponseDTO result = this.createUserService.execute(userEntity);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
