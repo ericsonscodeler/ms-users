@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.ericson.ms_user_auth.Domain.DTOS.UserResponseDTO;
 import com.ericson.ms_user_auth.Domain.Entity.UserEntity;
-import com.ericson.ms_user_auth.Exception.UserFoundException;
+import com.ericson.ms_user_auth.Exception.UserAlreadyExistsException;
 import com.ericson.ms_user_auth.Repository.UserRepository;
 
 @Service
@@ -22,7 +22,7 @@ public class CreateUserService {
 
         this.userRepository.findByEmail(userEntity.getEmail())
                 .ifPresent((user) -> {
-                    throw new UserFoundException();
+                    throw new UserAlreadyExistsException();
                 });
 
         var password = passwordEncoder.encode(userEntity.getPassword());
@@ -30,6 +30,6 @@ public class CreateUserService {
 
         UserEntity savedUser = this.userRepository.save(userEntity);
 
-        return new UserResponseDTO(savedUser.getUsername(), savedUser.getEmail());
+        return new UserResponseDTO(savedUser.getUsername(), savedUser.getEmail(), savedUser.getPassword());
     }
 }

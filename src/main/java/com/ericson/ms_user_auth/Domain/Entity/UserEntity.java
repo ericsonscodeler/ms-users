@@ -26,6 +26,6 @@ public class UserEntity {
     private String email;
 
     @NotBlank()
-    @Length(min = 10, max = 100)
+    @Length(min = 5, max = 100)
     private String password;
 }
