@@ -20,16 +20,16 @@ public class CreateUserService {
 
     public UserResponseDTO execute(UserEntity userEntity) {
 
-        this.userRepository.findByEmail(userEntity.getEmail())
-                .ifPresent((user) -> {
-                    throw new UserAlreadyExistsException();
-                });
+        var user = this.userRepository.findByEmail(userEntity.getEmail()).orElseThrow(() -> {
+            throw new UserAlreadyExistsException();
+        });
 
         var password = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(password);
 
-        UserEntity savedUser = this.userRepository.save(userEntity);
+        var userDTO = UserResponseDTO.builder().id(user.getId()).email(user.getEmail()).username(user.getUsername())
+                .build();
 
-        return new UserResponseDTO(savedUser.getUsername(), savedUser.getEmail(), savedUser.getPassword());
+        return userDTO;
     }
 }
