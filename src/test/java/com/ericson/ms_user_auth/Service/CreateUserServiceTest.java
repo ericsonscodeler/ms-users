@@ -6,8 +6,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
 
 import java.util.Optional;
+import java.util.UUID;
 
-import com.ericson.ms_user_auth.Domain.DTOS.UserResponseDTO;
+import com.ericson.ms_user_auth.Domain.DTOS.UserRegisterResponseDTO;
 import com.ericson.ms_user_auth.Domain.Entity.UserEntity;
 import com.ericson.ms_user_auth.Exception.UserAlreadyExistsException;
 import com.ericson.ms_user_auth.Repository.UserRepository;
@@ -42,6 +43,7 @@ public class CreateUserServiceTest {
         user.setUsername("test");
         user.setEmail("teste@teste.com");
         user.setPassword("password123");
+        var userId = UUID.randomUUID();
 
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword123");
@@ -50,12 +52,13 @@ public class CreateUserServiceTest {
         savedUser.setUsername("test");
         savedUser.setEmail("teste@teste.com");
         savedUser.setPassword("encodedPassword123");
+        savedUser.setId(userId);
 
         when(userRepository.save(user)).thenReturn(savedUser);
 
-        UserResponseDTO createdUser = createUserService.execute(user);
+        UserRegisterResponseDTO createdUser = createUserService.execute(user);
 
-        assertThat(createdUser).isEqualTo(new UserResponseDTO("test", "teste@teste.com", "encodedPassword123"));
+        assertThat(createdUser).isEqualTo(new UserRegisterResponseDTO(userId, "teste@teste.com", "encodedPassword123"));
     }
 
     @Test

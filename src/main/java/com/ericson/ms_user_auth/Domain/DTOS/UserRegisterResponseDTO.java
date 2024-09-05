@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class UserResponseDTO {
+public class UserRegisterResponseDTO {
 
     private UUID id;
     private String email;
