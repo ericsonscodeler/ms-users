@@ -38,7 +38,7 @@ public class CreateUserServiceTest {
     @Test
     @DisplayName("Should be able to create a new user")
     public void should_be_able_to_create_a_new_user() {
-        // Arrange
+
         UserEntity user = new UserEntity();
         user.setUsername("test");
         user.setEmail("teste@teste.com");
@@ -49,16 +49,15 @@ public class CreateUserServiceTest {
         when(passwordEncoder.encode(user.getPassword())).thenReturn("encodedPassword123");
 
         UserEntity savedUser = new UserEntity();
+        savedUser.setId(userId);
         savedUser.setUsername("test");
         savedUser.setEmail("teste@teste.com");
-        savedUser.setPassword("encodedPassword123");
-        savedUser.setId(userId);
 
         when(userRepository.save(user)).thenReturn(savedUser);
 
         UserRegisterResponseDTO createdUser = createUserService.execute(user);
 
-        assertThat(createdUser).isEqualTo(new UserRegisterResponseDTO(userId, "teste@teste.com", "encodedPassword123"));
+        assertThat(createdUser).isEqualTo(new UserRegisterResponseDTO(userId, "teste@teste.com", "test"));
     }
 
     @Test
